@@ -29,18 +29,3 @@ func framesToSkip(rollrusSkip int) int {
 	// subtract 1 since we're currently working from a function
 	return skip + 2 - 1
 }
-
-func errorCause(err error) error {
-	type causer interface {
-		Cause() error
-	}
-
-	for err != nil {
-		cause, ok := err.(causer)
-		if !ok {
-			break
-		}
-		err = cause.Cause()
-	}
-	return err
-}
