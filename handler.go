@@ -5,7 +5,7 @@ import (
 
 	"github.com/rollbar/rollbar-go"
 
-	"golang.org/x/exp/slog"
+	"log/slog"
 )
 
 type Option struct {

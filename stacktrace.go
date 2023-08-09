@@ -19,7 +19,7 @@ func framesToSkip(rollrusSkip int) int {
 	// we're out of the logrus package
 	for i := skip; ; i++ {
 		_, file, _, ok := runtime.Caller(i)
-		if !ok || (!strings.Contains(file, "slog") && !strings.Contains(file, "golang.org/x/exp/slog")) {
+		if !ok || (!strings.Contains(file, "slog") && !strings.Contains(file, "log/slog")) {
 			skip = i
 			break
 		}

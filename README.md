@@ -2,7 +2,7 @@
 # slog: Rollbar handler
 
 [![tag](https://img.shields.io/github/tag/samber/slog-rollbar.svg)](https://github.com/samber/slog-rollbar/releases)
-![Go Version](https://img.shields.io/badge/Go-%3E%3D%201.20.3-%23007d9c)
+![Go Version](https://img.shields.io/badge/Go-%3E%3D%201.21-%23007d9c)
 [![GoDoc](https://godoc.org/github.com/samber/slog-rollbar?status.svg)](https://pkg.go.dev/github.com/samber/slog-rollbar)
 ![Build Status](https://github.com/samber/slog-rollbar/actions/workflows/test.yml/badge.svg)
 [![Go report](https://goreportcard.com/badge/github.com/samber/slog-rollbar)](https://goreportcard.com/report/github.com/samber/slog-rollbar)
@@ -10,7 +10,7 @@
 [![Contributors](https://img.shields.io/github/contributors/samber/slog-rollbar)](https://github.com/samber/slog-rollbar/graphs/contributors)
 [![License](https://img.shields.io/github/license/samber/slog-rollbar)](./LICENSE)
 
-A [Rollbar](https://rollbar.com) Handler for [slog](https://pkg.go.dev/golang.org/x/exp/slog) Go library.
+A [Rollbar](https://rollbar.com) Handler for [slog](https://pkg.go.dev/log/slog) Go library.
 
 **See also:**
 
@@ -41,11 +41,9 @@ A [Rollbar](https://rollbar.com) Handler for [slog](https://pkg.go.dev/golang.or
 go get github.com/samber/slog-rollbar
 ```
 
-**Compatibility**: go >= 1.20.3
+**Compatibility**: go >= 1.21
 
-This library is v0 and follows SemVer strictly. On `slog` final release (go 1.21), this library will go v1.
-
-No breaking changes will be made to exported APIs before v1.0.0.
+No breaking changes will be made to exported APIs before v2.0.0.
 
 ## 💡 Usage
 
@@ -76,7 +74,7 @@ import (
 	"github.com/rollbar/rollbar-go"
 	slogrollbar "github.com/samber/slog-rollbar"
 
-	"golang.org/x/exp/slog"
+	"log/slog"
 )
 
 func main() {

@@ -7,7 +7,7 @@ import (
 	"github.com/rollbar/rollbar-go"
 	slogrollbar "github.com/samber/slog-rollbar"
 
-	"golang.org/x/exp/slog"
+	"log/slog"
 )
 
 func main() {
