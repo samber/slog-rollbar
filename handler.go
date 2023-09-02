@@ -31,6 +31,8 @@ func (o Option) NewRollbarHandler() slog.Handler {
 	}
 }
 
+var _ slog.Handler = (*RollbarHandler)(nil)
+
 type RollbarHandler struct {
 	option Option
 	attrs  []slog.Attr
