@@ -57,7 +57,7 @@ GoDoc: [https://pkg.go.dev/github.com/samber/slog-rollbar](https://pkg.go.dev/gi
 
 ```go
 type Option struct {
-    // log level (default: debug)
+	// log level (default: debug)
 	Level     slog.Leveler
 
 	// Rollbar client
