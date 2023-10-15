@@ -2,62 +2,28 @@ package slogrollbar
 
 import (
 	"log/slog"
+
+	slogcommon "github.com/samber/slog-common"
 )
 
-type Converter func(loggerAttr []slog.Attr, record slog.Record) (map[string]any, error)
+var SourceKey = "source"
+var ErrorKeys = []string{"error", "err"}
 
-func DefaultConverter(loggerAttr []slog.Attr, record slog.Record) (map[string]any, error) {
-	output := attrsToValue(loggerAttr)
+type Converter func(addSource bool, replaceAttr func(groups []string, a slog.Attr) slog.Attr, loggerAttr []slog.Attr, groups []string, record *slog.Record) (map[string]any, error)
 
-	record.Attrs(func(attr slog.Attr) bool {
-		output[attr.Key] = attrToValue(attr)
-		return true
-	})
+func DefaultConverter(addSource bool, replaceAttr func(groups []string, a slog.Attr) slog.Attr, loggerAttr []slog.Attr, groups []string, record *slog.Record) (map[string]any, error) {
+	// aggregate all attributes
+	attrs := slogcommon.AppendRecordAttrsToAttrs(loggerAttr, groups, record)
 
-	if v, ok := output["error"]; ok {
-		if err, ok := v.(error); ok {
-			delete(output, "error")
-			return output, err
-		}
+	// developer formatters
+	attrs = slogcommon.ReplaceError(attrs, ErrorKeys...)
+	if addSource {
+		attrs = append(attrs, slogcommon.Source(SourceKey, record))
 	}
+	attrs = slogcommon.ReplaceAttrs(replaceAttr, []string{}, attrs...)
+
+	// handler formatter
+	output := slogcommon.AttrsToMap(attrs...)
 
 	return output, nil
-}
-
-func attrsToValue(attrs []slog.Attr) map[string]any {
-	output := map[string]any{}
-	for i := range attrs {
-		output[attrs[i].Key] = attrToValue(attrs[i])
-	}
-	return output
-}
-
-func attrToValue(attr slog.Attr) any {
-	v := attr.Value
-	kind := attr.Value.Kind()
-
-	switch kind {
-	case slog.KindAny:
-		return v.Any()
-	case slog.KindLogValuer:
-		return v.LogValuer().LogValue().Any()
-	case slog.KindGroup:
-		return attrsToValue(v.Group())
-	case slog.KindInt64:
-		return v.Int64()
-	case slog.KindUint64:
-		return v.Uint64()
-	case slog.KindFloat64:
-		return v.Float64()
-	case slog.KindString:
-		return v.String()
-	case slog.KindBool:
-		return v.Bool()
-	case slog.KindDuration:
-		return v.Duration()
-	case slog.KindTime:
-		return v.Time().UTC()
-	default:
-		return v.Any()
-	}
 }

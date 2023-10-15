@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/rollbar/rollbar-go"
+	slogcommon "github.com/samber/slog-common"
 
 	"log/slog"
 )
@@ -17,6 +18,10 @@ type Option struct {
 
 	// optional: customize Rollbar event builder
 	Converter Converter
+
+	// optional: see slog.HandlerOptions
+	AddSource   bool
+	ReplaceAttr func(groups []string, a slog.Attr) slog.Attr
 }
 
 func (o Option) NewRollbarHandler() slog.Handler {
@@ -49,7 +54,7 @@ func (h *RollbarHandler) Handle(ctx context.Context, record slog.Record) error {
 		converter = h.option.Converter
 	}
 
-	extra, err := converter(h.attrs, record)
+	extra, err := converter(h.option.AddSource, h.option.ReplaceAttr, h.attrs, h.groups, &record)
 
 	switch record.Level {
 	case slog.LevelDebug:
@@ -73,7 +78,7 @@ func (h *RollbarHandler) Handle(ctx context.Context, record slog.Record) error {
 func (h *RollbarHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	return &RollbarHandler{
 		option: h.option,
-		attrs:  appendAttrsToGroup(h.groups, h.attrs, attrs),
+		attrs:  slogcommon.AppendAttrsToGroup(h.groups, h.attrs, attrs...),
 		groups: h.groups,
 	}
 }

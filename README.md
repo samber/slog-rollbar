@@ -65,7 +65,18 @@ type Option struct {
 
 	// optional: customize Rollbar event builder
 	Converter Converter
+
+	// optional: see slog.HandlerOptions
+	AddSource   bool
+	ReplaceAttr func(groups []string, a slog.Attr) slog.Attr
 }
+```
+
+Other global parameters:
+
+```go
+slogrollbar.SourceKey = "source"
+slogrollbar.ErrorKeys = []string{"error", "err"}
 ```
 
 ### Example
