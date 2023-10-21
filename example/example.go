@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/rollbar/rollbar-go"
-	slogrollbar "github.com/samber/slog-rollbar"
+	slogrollbar "github.com/samber/slog-rollbar/v2"
 
 	"log/slog"
 )

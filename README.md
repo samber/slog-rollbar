@@ -43,16 +43,16 @@ A [Rollbar](https://rollbar.com) Handler for [slog](https://pkg.go.dev/log/slog)
 ## 🚀 Install
 
 ```sh
-go get github.com/samber/slog-rollbar
+go get github.com/samber/slog-rollbar/v2
 ```
 
 **Compatibility**: go >= 1.21
 
-No breaking changes will be made to exported APIs before v2.0.0.
+No breaking changes will be made to exported APIs before v3.0.0.
 
 ## 💡 Usage
 
-GoDoc: [https://pkg.go.dev/github.com/samber/slog-rollbar](https://pkg.go.dev/github.com/samber/slog-rollbar)
+GoDoc: [https://pkg.go.dev/github.com/samber/slog-rollbar/v2](https://pkg.go.dev/github.com/samber/slog-rollbar/v2)
 
 ### Handler options
 
@@ -88,7 +88,7 @@ import (
 	"time"
 
 	"github.com/rollbar/rollbar-go"
-	slogrollbar "github.com/samber/slog-rollbar"
+	slogrollbar "github.com/samber/slog-rollbar/v2"
 
 	"log/slog"
 )

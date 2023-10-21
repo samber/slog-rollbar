@@ -1,4 +1,4 @@
-module github.com/samber/slog-rollbar
+module github.com/samber/slog-rollbar/v2
 
 go 1.21
 
