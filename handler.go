@@ -58,17 +58,17 @@ func (h *RollbarHandler) Handle(ctx context.Context, record slog.Record) error {
 
 	switch record.Level {
 	case slog.LevelDebug:
-		h.option.Client.MessageWithExtras(rollbar.DEBUG, record.Message, extra)
+		h.option.Client.MessageWithExtrasAndContext(ctx, rollbar.DEBUG, record.Message, extra)
 	case slog.LevelInfo:
-		h.option.Client.MessageWithExtras(rollbar.INFO, record.Message, extra)
+		h.option.Client.MessageWithExtrasAndContext(ctx, rollbar.INFO, record.Message, extra)
 	case slog.LevelWarn:
-		h.option.Client.MessageWithExtras(rollbar.WARN, record.Message, extra)
+		h.option.Client.MessageWithExtrasAndContext(ctx, rollbar.WARN, record.Message, extra)
 	case slog.LevelError:
 		if err != nil {
 			skip := framesToSkip(2)
-			h.option.Client.ErrorWithStackSkipWithExtras(rollbar.ERR, err, skip, extra)
+			h.option.Client.ErrorWithStackSkipWithExtrasAndContext(ctx, rollbar.ERR, err, skip, extra)
 		} else {
-			h.option.Client.MessageWithExtras(rollbar.ERR, record.Message, extra)
+			h.option.Client.MessageWithExtrasAndContext(ctx, rollbar.ERR, record.Message, extra)
 		}
 	}
 
