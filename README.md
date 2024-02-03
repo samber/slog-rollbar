@@ -64,7 +64,8 @@ type Option struct {
 	Level     slog.Leveler
 
 	// Rollbar client
-	Client *rollbar.Client
+	Client  *rollbar.Client
+	Timeout time.Duration // default: 10s
 
 	// optional: customize Rollbar event builder
 	Converter Converter

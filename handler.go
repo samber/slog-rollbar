@@ -2,6 +2,7 @@ package slogrollbar
 
 import (
 	"context"
+	"time"
 
 	"github.com/rollbar/rollbar-go"
 	slogcommon "github.com/samber/slog-common"
@@ -14,7 +15,8 @@ type Option struct {
 	Level slog.Leveler
 
 	// Rollbar client
-	Client *rollbar.Client
+	Client  *rollbar.Client
+	Timeout time.Duration // default: 10s
 
 	// optional: customize Rollbar event builder
 	Converter Converter
@@ -27,6 +29,10 @@ type Option struct {
 func (o Option) NewRollbarHandler() slog.Handler {
 	if o.Level == nil {
 		o.Level = slog.LevelDebug
+	}
+
+	if o.Timeout == 0 {
+		o.Timeout = 10 * time.Second
 	}
 
 	return &RollbarHandler{
@@ -55,6 +61,9 @@ func (h *RollbarHandler) Handle(ctx context.Context, record slog.Record) error {
 	}
 
 	extra, err := converter(h.option.AddSource, h.option.ReplaceAttr, h.attrs, h.groups, &record)
+
+	ctx, cancel := context.WithTimeout(context.Background(), h.option.Timeout)
+	defer cancel()
 
 	switch record.Level {
 	case slog.LevelDebug:
