@@ -35,6 +35,10 @@ func (o Option) NewRollbarHandler() slog.Handler {
 		o.Timeout = 10 * time.Second
 	}
 
+	if o.Converter == nil {
+		o.Converter = DefaultConverter
+	}
+
 	return &RollbarHandler{
 		option: o,
 		attrs:  []slog.Attr{},
@@ -55,12 +59,7 @@ func (h *RollbarHandler) Enabled(_ context.Context, level slog.Level) bool {
 }
 
 func (h *RollbarHandler) Handle(ctx context.Context, record slog.Record) error {
-	converter := DefaultConverter
-	if h.option.Converter != nil {
-		converter = h.option.Converter
-	}
-
-	extra, err := converter(h.option.AddSource, h.option.ReplaceAttr, h.attrs, h.groups, &record)
+	extra, err := h.option.Converter(h.option.AddSource, h.option.ReplaceAttr, h.attrs, h.groups, &record)
 
 	ctx, cancel := context.WithTimeout(context.Background(), h.option.Timeout)
 	defer cancel()
