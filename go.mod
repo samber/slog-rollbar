@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/rollbar/rollbar-go v1.4.5
-	github.com/samber/slog-common v0.14.0
+	github.com/samber/slog-common v0.15.1
 )
 
 require (
