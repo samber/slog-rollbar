@@ -20,6 +20,8 @@ type Option struct {
 
 	// optional: customize Rollbar event builder
 	Converter Converter
+	// optional: fetch attributes from context
+	AttrFromContext []func(ctx context.Context) []slog.Attr
 
 	// optional: see slog.HandlerOptions
 	AddSource   bool
@@ -37,6 +39,10 @@ func (o Option) NewRollbarHandler() slog.Handler {
 
 	if o.Converter == nil {
 		o.Converter = DefaultConverter
+	}
+
+	if o.AttrFromContext == nil {
+		o.AttrFromContext = []func(ctx context.Context) []slog.Attr{}
 	}
 
 	return &RollbarHandler{
@@ -59,7 +65,8 @@ func (h *RollbarHandler) Enabled(_ context.Context, level slog.Level) bool {
 }
 
 func (h *RollbarHandler) Handle(ctx context.Context, record slog.Record) error {
-	extra, err := h.option.Converter(h.option.AddSource, h.option.ReplaceAttr, h.attrs, h.groups, &record)
+	fromContext := slogcommon.ContextExtractor(ctx, h.option.AttrFromContext)
+	extra, err := h.option.Converter(h.option.AddSource, h.option.ReplaceAttr, append(h.attrs, fromContext...), h.groups, &record)
 
 	ctx, cancel := context.WithTimeout(context.Background(), h.option.Timeout)
 	defer cancel()

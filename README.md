@@ -80,6 +80,8 @@ type Option struct {
 
 	// optional: customize Rollbar event builder
 	Converter Converter
+	// optional: fetch attributes from context
+	AttrFromContext []func(ctx context.Context) []slog.Attr
 
 	// optional: see slog.HandlerOptions
 	AddSource   bool
@@ -128,6 +130,41 @@ func main() {
 		).
 		With("error", fmt.Errorf("an error")).
 		Error("a message")
+}
+```
+
+### Tracing
+
+Import the samber/slog-otel library.
+
+```go
+import (
+	slogrollbar "github.com/samber/slog-rollbar"
+	slogotel "github.com/samber/slog-otel"
+	"go.opentelemetry.io/otel/sdk/trace"
+)
+
+func main() {
+	tp := trace.NewTracerProvider(
+		trace.WithSampler(trace.AlwaysSample()),
+	)
+	tracer := tp.Tracer("hello/world")
+
+	ctx, span := tracer.Start(context.Background(), "foo")
+	defer span.End()
+
+	span.AddEvent("bar")
+
+	logger := slog.New(
+		slogrollbar.Option{
+			// ...
+			AttrFromContext: []func(ctx context.Context) []slog.Attr{
+				slogotel.ExtractOtelAttrFromContext([]string{"tracing"}, "trace_id", "span_id"),
+			},
+		}.NewRollbarHandler(),
+	)
+
+	logger.ErrorContext(ctx, "a message")
 }
 ```
 
