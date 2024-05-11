@@ -66,26 +66,19 @@ func (h *RollbarHandler) Enabled(_ context.Context, level slog.Level) bool {
 
 func (h *RollbarHandler) Handle(ctx context.Context, record slog.Record) error {
 	fromContext := slogcommon.ContextExtractor(ctx, h.option.AttrFromContext)
-	extra, err := h.option.Converter(h.option.AddSource, h.option.ReplaceAttr, append(h.attrs, fromContext...), h.groups, &record)
+	extra := h.option.Converter(h.option.AddSource, h.option.ReplaceAttr, append(h.attrs, fromContext...), h.groups, &record)
+	level := LogLevels[record.Level]
 
 	ctx, cancel := context.WithTimeout(context.Background(), h.option.Timeout)
 	defer cancel()
 
-	switch record.Level {
-	case slog.LevelDebug:
-		h.option.Client.MessageWithExtrasAndContext(ctx, rollbar.DEBUG, record.Message, extra)
-	case slog.LevelInfo:
-		h.option.Client.MessageWithExtrasAndContext(ctx, rollbar.INFO, record.Message, extra)
-	case slog.LevelWarn:
-		h.option.Client.MessageWithExtrasAndContext(ctx, rollbar.WARN, record.Message, extra)
-	case slog.LevelError:
-		if err != nil {
-			skip := framesToSkip(2)
-			h.option.Client.ErrorWithStackSkipWithExtrasAndContext(ctx, rollbar.ERR, err, skip, extra)
-		} else {
-			h.option.Client.MessageWithExtrasAndContext(ctx, rollbar.ERR, record.Message, extra)
-		}
-	}
+	// if level == rollbar.ERR || level == rollbar.CRIT {
+	// 	skip := framesToSkip(2)
+	// 	h.option.Client.ErrorWithStackSkipWithExtrasAndContext(ctx, rollbar.ERR, err, skip, extra)
+	//  return nil
+	// }
+
+	h.option.Client.MessageWithExtrasAndContext(ctx, level, record.Message, extra)
 
 	return nil
 }

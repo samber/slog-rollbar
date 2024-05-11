@@ -95,6 +95,7 @@ Other global parameters:
 ```go
 slogrollbar.SourceKey = "source"
 slogrollbar.ErrorKeys = []string{"error", "err"}
+slogrollbar.LogLevels = map[slog.Level]string{...}
 ```
 
 ### Example

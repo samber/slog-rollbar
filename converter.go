@@ -9,9 +9,9 @@ import (
 var SourceKey = "source"
 var ErrorKeys = []string{"error", "err"}
 
-type Converter func(addSource bool, replaceAttr func(groups []string, a slog.Attr) slog.Attr, loggerAttr []slog.Attr, groups []string, record *slog.Record) (map[string]any, error)
+type Converter func(addSource bool, replaceAttr func(groups []string, a slog.Attr) slog.Attr, loggerAttr []slog.Attr, groups []string, record *slog.Record) map[string]any
 
-func DefaultConverter(addSource bool, replaceAttr func(groups []string, a slog.Attr) slog.Attr, loggerAttr []slog.Attr, groups []string, record *slog.Record) (map[string]any, error) {
+func DefaultConverter(addSource bool, replaceAttr func(groups []string, a slog.Attr) slog.Attr, loggerAttr []slog.Attr, groups []string, record *slog.Record) map[string]any {
 	// aggregate all attributes
 	attrs := slogcommon.AppendRecordAttrsToAttrs(loggerAttr, groups, record)
 
@@ -25,5 +25,5 @@ func DefaultConverter(addSource bool, replaceAttr func(groups []string, a slog.A
 	// handler formatter
 	output := slogcommon.AttrsToMap(attrs...)
 
-	return output, nil
+	return output
 }
