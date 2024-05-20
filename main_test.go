@@ -3,10 +3,13 @@ package slogrollbar
 import (
 	"testing"
 
-	// "go.uber.org/goleak"
+	"go.uber.org/goleak"
 )
 
+var knownGoroutineLeaks = []goleak.Option{
+	goleak.IgnoreTopFunction("github.com/rollbar/rollbar-go.NewAsyncTransport.func1"),
+}
+
 func TestMain(m *testing.M) {
-	// commented because the rollbar library is leaking a coroutine
-	// goleak.VerifyTestMain(m)
+	goleak.VerifyTestMain(m, knownGoroutineLeaks...)
 }
