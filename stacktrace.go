@@ -9,6 +9,7 @@ import (
 
 // framesToSkip returns the number of caller frames to skip
 // to get a stack trace that excludes rollrus and logrus.
+// nolint:unused
 func framesToSkip(rollrusSkip int) int {
 	// skip 1 to get out of this function
 	skip := rollrusSkip + 1
