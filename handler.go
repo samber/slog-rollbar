@@ -161,6 +161,7 @@ func defaultReplaceAttr(groups []string, a slog.Attr) slog.Attr {
 		return a
 	}
 
+	// rollbar does not know how send http.Request objects
 	if _, ok := a.Value.Any().(*http.Request); ok {
 		return slog.Attr{}
 	}
