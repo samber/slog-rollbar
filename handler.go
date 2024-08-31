@@ -39,7 +39,7 @@ type Option struct {
 
 	// optional: see slog.HandlerOptions
 	AddSource   bool
-	ReplaceAttr func(groups []string, a slog.Attr) slog.Attr
+	ReplaceAttr func(groups []string, a slog.Attr) slog.Attr // default: removeRequestAttr
 }
 
 func (o Option) NewRollbarHandler() slog.Handler {
@@ -60,7 +60,7 @@ func (o Option) NewRollbarHandler() slog.Handler {
 	}
 
 	if o.ReplaceAttr == nil {
-		o.ReplaceAttr = defaultReplaceAttr
+		o.ReplaceAttr = removeRequestAttr
 	}
 
 	if o.SkipFrames == nil {
@@ -155,7 +155,7 @@ func (h *RollbarHandler) WithGroup(name string) slog.Handler {
 	}
 }
 
-func defaultReplaceAttr(groups []string, a slog.Attr) slog.Attr {
+func removeRequestAttr(groups []string, a slog.Attr) slog.Attr {
 	// Leave group untouched
 	if len(groups) > 1 {
 		return a

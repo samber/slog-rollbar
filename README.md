@@ -102,7 +102,7 @@ type Option struct {
 
 	// optional: see slog.HandlerOptions
 	AddSource   bool
-	ReplaceAttr func(groups []string, a slog.Attr) slog.Attr
+	ReplaceAttr func(groups []string, a slog.Attr) slog.Attr // default: removeRequestAttr
 }
 ```
 
