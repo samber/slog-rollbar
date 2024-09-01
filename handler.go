@@ -155,6 +155,7 @@ func (h *RollbarHandler) WithGroup(name string) slog.Handler {
 	}
 }
 
+// see https://github.com/samber/slog-rollbar/pull/2
 func removeRequestAttr(groups []string, a slog.Attr) slog.Attr {
 	// Leave group untouched
 	if len(groups) > 1 {
