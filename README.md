@@ -91,8 +91,9 @@ type Option struct {
 	Level     slog.Leveler
 
 	// Rollbar client
-	Client  *rollbar.Client
-	Timeout time.Duration // default: 10s
+	Client     *rollbar.Client
+	Timeout    time.Duration // default: 10s
+	SkipFrames *int          // default: 2
 
 	// optional: customize Rollbar event builder
 	Converter Converter
@@ -101,7 +102,7 @@ type Option struct {
 
 	// optional: see slog.HandlerOptions
 	AddSource   bool
-	ReplaceAttr func(groups []string, a slog.Attr) slog.Attr
+	ReplaceAttr func(groups []string, a slog.Attr) slog.Attr // default: removeRequestAttr
 }
 ```
 
