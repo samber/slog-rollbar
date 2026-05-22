@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/rollbar/rollbar-go"
@@ -18,7 +19,11 @@ func main() {
 	project := "samber/slog-rollbar/example"
 
 	client := rollbar.NewAsync(token, env, version, host, project)
-	defer client.Close()
+	defer func() {
+		if err := client.Close(); err != nil {
+			log.Printf("failed to close rollbar client: %v", err)
+		}
+	}()
 
 	logger := slog.New(slogrollbar.Option{Level: slog.LevelDebug, Client: client}.NewRollbarHandler())
 
